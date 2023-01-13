@@ -2,8 +2,10 @@ package com.SpringGuru.SpringGuruProject.bootstrap;
 
 import com.SpringGuru.SpringGuruProject.domain.Author;
 import com.SpringGuru.SpringGuruProject.domain.Book;
+import com.SpringGuru.SpringGuruProject.domain.Publisher;
 import com.SpringGuru.SpringGuruProject.repositories.AuthorRepository;
 import com.SpringGuru.SpringGuruProject.repositories.BookRepository;
+import com.SpringGuru.SpringGuruProject.repositories.PublisherRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -12,27 +14,55 @@ public class BootStrapData implements CommandLineRunner {
 
     private final AuthorRepository authorRepository;
     private final BookRepository bookRepository;
+    private final PublisherRepository publisherRepository;
 
-    public BootStrapData(AuthorRepository authorRepository, BookRepository bookRepository) {
+    public BootStrapData(AuthorRepository authorRepository, BookRepository bookRepository, PublisherRepository publisherRepository) {
         this.authorRepository = authorRepository;
         this.bookRepository = bookRepository;
+        this.publisherRepository = publisherRepository;
     }
 
     @Override
     public void run(String... args) throws Exception {
 
-        Book firstJohn = new Book("1John","62");
 
-        Author john = new Author("John","Jr");
-        john.getBooks().add(firstJohn);
+        System.out.println("Started in Bootstrap");
 
-        firstJohn.getAuthors().add(john);
+        Publisher publisher = new Publisher();
+        publisher.setName("SFG Publishing");
+        publisher.setCity("St Petersburg");
+        publisher.setState("FL");
 
-        authorRepository.save(john);
-        bookRepository.save(firstJohn);
+        publisherRepository.save(publisher);
 
-        System.out.println("Number of Books " + bookRepository.count());
-        System.out.println("Number of Authors " + authorRepository.count());
+        System.out.println("Publisher Count: " + publisherRepository.count());
+
+        Author eric = new Author("Eric", "Evans");
+        Book ddd = new Book("Domain Driven Design", "123123");
+        eric.getBooks().add(ddd);
+        ddd.getAuthors().add(eric);
+
+        ddd.setPublisher(publisher);
+        publisher.getBooks().add(ddd);
+
+        authorRepository.save(eric);
+        bookRepository.save(ddd);
+        publisherRepository.save(publisher);
+
+        Author rod = new Author("Rod", "Johnson");
+        Book noEJB = new Book("J2EE Development without EJB", "3939459459");
+        rod.getBooks().add(noEJB);
+        noEJB.getAuthors().add(rod);
+
+        noEJB.setPublisher(publisher);
+        publisher.getBooks().add(noEJB);
+
+        authorRepository.save(rod);
+        bookRepository.save(noEJB);
+        publisherRepository.save(publisher);
+
+        System.out.println("Number of Books: " + bookRepository.count());
+        System.out.println("Publisher Number of Books: " + publisher.getBooks().size());
 
     }
 }
