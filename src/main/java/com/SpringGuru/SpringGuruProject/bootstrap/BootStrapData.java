@@ -12,9 +12,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class BootStrapData implements CommandLineRunner {
 
-    private final AuthorRepository authorRepository;
-    private final BookRepository bookRepository;
-    private final PublisherRepository publisherRepository;
+    private AuthorRepository authorRepository;
+    private BookRepository bookRepository;
+    private PublisherRepository publisherRepository;
 
     public BootStrapData(AuthorRepository authorRepository, BookRepository bookRepository, PublisherRepository publisherRepository) {
         this.authorRepository = authorRepository;
@@ -22,47 +22,40 @@ public class BootStrapData implements CommandLineRunner {
         this.publisherRepository = publisherRepository;
     }
 
+
     @Override
     public void run(String... args) throws Exception {
 
+        Publisher webster = new Publisher();
+        webster.setName("Webster");
+        webster.setState("California");
+        webster.setAddress1("New road");
+        webster.setCity("new orlands");
+        webster.setZip("1234");
+        publisherRepository.save(webster);
 
-        System.out.println("Started in Bootstrap");
+        Book mastery = new Book();
+        mastery.setTitle("Mastery");
+        mastery.setIsbn("mas123");
 
-        Publisher publisher = new Publisher();
-        publisher.setName("SFG Publishing");
-        publisher.setCity("St Petersburg");
-        publisher.setState("FL");
+        Author robert = new Author();
+        robert.setFirstName("Robert");
+        robert.setLastName("Green");
 
-        publisherRepository.save(publisher);
+        mastery.getAuthors().add(robert);
+        robert.getBooks().add(mastery);
+        mastery.setPublisher(webster);
+        webster.getBooks().add(mastery);
 
-        System.out.println("Publisher Count: " + publisherRepository.count());
+        mastery.setPublisher(webster);
+        webster.getBooks().add(mastery);
 
-        Author eric = new Author("Eric", "Evans");
-        Book ddd = new Book("Domain Driven Design", "123123");
-        eric.getBooks().add(ddd);
-        ddd.getAuthors().add(eric);
+        authorRepository.save(robert);
+        bookRepository.save(mastery);
+        publisherRepository.save(webster);
 
-        ddd.setPublisher(publisher);
-        publisher.getBooks().add(ddd);
-
-        authorRepository.save(eric);
-        bookRepository.save(ddd);
-        publisherRepository.save(publisher);
-
-        Author rod = new Author("Rod", "Johnson");
-        Book noEJB = new Book("J2EE Development without EJB", "3939459459");
-        rod.getBooks().add(noEJB);
-        noEJB.getAuthors().add(rod);
-
-        noEJB.setPublisher(publisher);
-        publisher.getBooks().add(noEJB);
-
-        authorRepository.save(rod);
-        bookRepository.save(noEJB);
-        publisherRepository.save(publisher);
-
-        System.out.println("Number of Books: " + bookRepository.count());
-        System.out.println("Publisher Number of Books: " + publisher.getBooks().size());
+        System.out.println("number of books by webster" + webster.getBooks().size());
+        System.out.println("number of books by robert" + robert.getBooks().size());
 
     }
 }

@@ -64,7 +64,7 @@ public class Author {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Author author = (Author) o;
-        return id.equals(author.id);
+        return Objects.equals(id, author.id);
     }
 
     @Override

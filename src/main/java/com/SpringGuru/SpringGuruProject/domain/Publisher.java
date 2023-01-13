@@ -79,7 +79,7 @@ public class Publisher {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Publisher publisher = (Publisher) o;
-        return id.equals(publisher.id);
+        return Objects.equals(id, publisher.id);
     }
 
     @Override
